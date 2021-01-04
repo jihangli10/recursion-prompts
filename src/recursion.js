@@ -133,7 +133,7 @@ var reverse = function(string) {
 // 10. Write a function that determines if a string is a palindrome.
 var palindrome = function(string) {
   string = string.toLowerCase();
-  string = string.replace(/\s/g, '');
+  string = string.split(' ').join('');
   if (string.length === 0 || string.length === 1) {
     return true;
   } else {
@@ -224,11 +224,41 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+  var times = 0;
+  if (JSON.stringify(obj) === JSON.stringify({})) {
+    return 0;
+  } else {
+    for (var key in obj) {
+      if (typeof obj[key] === 'object') {
+        times += countValuesInObj(obj[key], value)
+      } else {
+        if (obj[key] === value) {
+          times += 1;
+        }
+      }
+    }
+    return times;
+  }
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+  if (JSON.stringify(obj) === JSON.stringify({})) {
+    return;
+  } else {
+    for (var key in obj) {
+      if (typeof obj[key] === 'object') {
+        replaceKeysInObj(obj[key], oldKey, newKey);
+      } else {
+        if (oldKey in obj) {
+          obj[newKey] = obj[oldKey];
+          delete obj[oldKey];
+        }
+      }
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
